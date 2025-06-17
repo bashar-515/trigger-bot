@@ -5,7 +5,7 @@ from typing import Tuple, Optional
 from dotenv import load_dotenv
 
 from viam.robot.client import RobotClient
-from viam.components.generic import Generic
+from viam.components.sensor import Sensor
 
 load_dotenv()
 
@@ -29,7 +29,7 @@ def validate(number: str) -> Tuple[bool, Optional[float]]:
 
 async def main() -> None:
     machine = await connect()
-    generic_component = Generic.from_robot(machine, "generic-1")
+    sensor = Sensor.from_robot(machine, "sensor-1")
 
     while True:
         is_valid, number = validate(input("enter a number to echo: "))
@@ -38,8 +38,7 @@ async def main() -> None:
             if number == 0:
                 break 
 
-            response = await generic_component.do_command({
-                "name": "number",
+            response = await sensor.get_readings(extra={
                 "number": number
             })
 
